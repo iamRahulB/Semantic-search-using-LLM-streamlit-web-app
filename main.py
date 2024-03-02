@@ -41,12 +41,16 @@ if user_input := st.chat_input("What is up?"):
       with st.status("Getting content from web...") as status_bar:
         st.write("Getting webpages...")
 
-        
-    
+    new_query=my_model.query_maker(user_input) 
+    user_input =new_query["answer"] 
+    with st.chat_message("assistant"):
+        st.write(f"Searching for: {user_input}")
+
     obj_link_gen = LinkGen(user_input)
     links = obj_link_gen.generate_links()
 
     obj_web_content = WebContent()
+    
 
     all_links_body_text = obj_web_content.fetch_content(links)
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000,

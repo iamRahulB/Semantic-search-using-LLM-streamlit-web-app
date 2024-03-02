@@ -40,3 +40,23 @@ class MyModel:
 
     final = {"answer": response.text}
     return final
+  
+  def query_maker(self,user_input):
+    INSTRUCTION = f"""
+        As a helpful assistant, your task is to respond to user queries. Below is the user input enclosed within triple backticks:
+
+        User input: ```{user_input}```
+
+        Your objective is to generate a concise summary or short form of the user's question. This summary will be used to search for relevant details on Google. Put yourself in the shoes of the user and think about how you would search for the given user input on Google.
+
+    """
+    genai.configure(api_key=os.environ['GEMINI_API'])
+
+    model_gem = genai.GenerativeModel(model_name="gemini-1.0-pro",
+                                      generation_config=generation_config)
+
+    response = model_gem.generate_content(INSTRUCTION)
+
+    final = {"answer": response.text}
+    return final
+
