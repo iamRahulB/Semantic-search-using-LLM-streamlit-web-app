@@ -11,6 +11,8 @@ from link_gen.faiss_search import FaissSearch
 
 from link_gen.final_gemini import FinalGemini
 
+st.title("Rahul's Semantic Search LLM")
+
 if "messages" not in st.session_state:
   st.session_state.messages = []
 
