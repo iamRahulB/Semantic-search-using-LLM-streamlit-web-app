@@ -2,12 +2,22 @@ import os
 
 import google.generativeai as genai
 
+from datetime import datetime
+
+current_time = datetime.now()
+
+full_date = current_time.strftime("%Y-%m-%d")
+
+
+
 generation_config = genai.types.GenerationConfig(
     temperature=1,
     top_p=1,
     top_k=1,
     max_output_tokens=4000,
 )
+
+
 
 
 class MyModel:
@@ -27,8 +37,8 @@ class MyModel:
     2. Double quotes: \"
     3. New line: \\n
 
-    If the requested information is not available in your knowledge base or you are not sure about the answer, then respond with "not found".
-
+    If the requested information is not available in your knowledge base or you are not sure about the answer, then respond with only "not found".
+    If you are not sure about the answer and if u don't have todays information in your knowlwdge base then don't say i don't have information. simply say "not found"
     Please send the response with Markdown format.
 """
 
@@ -49,9 +59,13 @@ class MyModel:
 
         User input: ```{user_input}```
 
-        Your objective is to generate a concise summary or short form of the user's question. This summary will be used to search for the latest details on Google. Imagine yourself as the user and consider how you would search for the given user input on Google to ensure you fetch the most recent information available.
+        todays date : {full_date}
+
+        Your objective is to generate a concise and grammatically correct query based on the user's question. This query will be used to search for the latest details on Google. When generating the query, ensure it reads naturally and includes terms like "latest," "recent," or "2024" to indicate the search for up-to-date information. Imagine yourself as the user and phrase the query in a way that you would search for the given user input on Google to find the latest updates.
 
     """
+
+
 
     genai.configure(api_key=os.environ['GEMINI_API'])
 
