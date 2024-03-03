@@ -4,11 +4,6 @@ import google.generativeai as genai
 
 from datetime import datetime
 
-current_time = datetime.now()
-
-full_date = current_time.strftime("%Y-%m-%d")
-
-
 
 generation_config = genai.types.GenerationConfig(
     temperature=1,
@@ -54,12 +49,16 @@ class MyModel:
     return final
   
   def query_maker(self,user_input):
+    current_time = datetime.now()
+
+    full_date = current_time.strftime("%Y-%m-%d")
+
     INSTRUCTION = f"""
         As a helpful assistant called "Rahul" created by "Rahul Bhole", your task is to respond to user queries. Below is the user input enclosed within triple backticks:
 
         User input: ```{user_input}```
 
-        todays date : {full_date}
+        today's date : {full_date}
 
         Your objective is to generate a concise and grammatically correct query based on the user's question. This query will be used to search for the latest details on Google. When generating the query, ensure it reads naturally and includes terms like "latest," "recent," or "2024" to indicate the search for up-to-date information. Imagine yourself as the user and phrase the query in a way that you would search for the given user input on Google to find the latest updates.
 
