@@ -18,7 +18,7 @@ class MyModel:
   def run_gemini(self, user_input):
 
     INSTRUCTION = f"""
-    As a helpful assistant, your task is to respond to user queries. Below is the user input enclosed within triple backticks:
+    As a helpful assistant called "Rahul" made by "Rahul Bhole", your task is to respond to user queries. Below is the user input enclosed within triple backticks:
 
     User input: ```{user_input}```
 
