@@ -46,6 +46,7 @@ class MyModel:
     response = model_gem.generate_content(INSTRUCTION)
 
     final = {"answer": response.text}
+    
     return final
   
   def query_maker(self,user_input):
