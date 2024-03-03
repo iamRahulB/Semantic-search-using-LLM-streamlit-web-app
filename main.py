@@ -37,9 +37,7 @@ if user_input := st.chat_input("What is up?"):
   answer = data["answer"]
 
   if answer == "not found":
-    with st.chat_message("assistant"):
-      with st.status("Getting content from web...") as status_bar:
-        st.write("Getting webpages...")
+  
 
     new_query=my_model.query_maker(user_input) 
     new_query =new_query["answer"] 
@@ -51,6 +49,9 @@ if user_input := st.chat_input("What is up?"):
 
     obj_web_content = WebContent()
     
+    with st.chat_message("assistant"):
+      with st.status("Getting content from web...") as status_bar:
+        st.write("Getting webpages...")
 
     all_links_body_text = obj_web_content.fetch_content(links)
     splitter = RecursiveCharacterTextSplitter(chunk_size=1000,
