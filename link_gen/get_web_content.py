@@ -8,7 +8,9 @@ class WebContent:
   def __init__(self):
     pass
 
-  def extract_body_text(self, link):  
+  def extract_body_text(self, link): 
+    
+    
     response = requests.get(link)
     
     def remove_a(match):

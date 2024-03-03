@@ -15,7 +15,6 @@ class LinkGen:
                         stop=3,
                         pause=2):
       query_links.append(links)
-      print(self.user_input)
 
     return query_links
 
