@@ -18,18 +18,20 @@ class MyModel:
   def run_gemini(self, user_input):
 
     INSTRUCTION = f"""
-        As a helpful assistant, your task is to respond to user queries. Below is the user input enclosed within triple backticks:
+    As a helpful assistant, your task is to respond to user queries. Below is the user input enclosed within triple backticks:
 
-        User input: ```{user_input}```
+    User input: ```{user_input}```
 
-        If the requested information is available in your knowledge base, respond with your response. Ensure to use escape characters in your response to avoid syntax errors while parsing. For example:
-        1. Use escape characters for triple double quotes: \"\"\"
-        2. Double quotes: \"
-        3. New line: \\n
-        
+    If the requested information is available in your knowledge base, respond with your response. Ensure to use escape characters in your response to avoid syntax errors while parsing. For example:
+    1. Use escape characters for triple double quotes: \"\"\"
+    2. Double quotes: \"
+    3. New line: \\n
 
-        If the requested information is not available in your knowledge base, respond with "not found"
-    """
+    If the requested information is not available in your knowledge base or you are not sure about the answer, then respond with "not found".
+
+    Please send the response with Markdown format.
+"""
+
 
     genai.configure(api_key=os.environ['GEMINI_API'])
 

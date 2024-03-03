@@ -42,11 +42,11 @@ if user_input := st.chat_input("What is up?"):
         st.write("Getting webpages...")
 
     new_query=my_model.query_maker(user_input) 
-    user_input =new_query["answer"] 
+    new_query =new_query["answer"] 
     with st.chat_message("assistant"):
-        st.write(f"Searching for: {user_input}")
+        st.write(f"Searching for: {new_query}")
 
-    obj_link_gen = LinkGen(user_input)
+    obj_link_gen = LinkGen(new_query)
     links = obj_link_gen.generate_links()
 
     obj_web_content = WebContent()
