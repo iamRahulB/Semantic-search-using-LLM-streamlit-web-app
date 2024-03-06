@@ -43,7 +43,7 @@ def main():
 
     answer = data["answer"]
 
-    if answer == "not found":
+    if "not found" in answer or "Not found" in answer:
     
 
       new_query=my_model.query_maker(user_input) 
