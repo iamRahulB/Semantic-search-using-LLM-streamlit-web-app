@@ -11,4 +11,5 @@ class Embedding:
     embeddings = model.encode(sentences)
 
     return embeddings ,model   
+
   
