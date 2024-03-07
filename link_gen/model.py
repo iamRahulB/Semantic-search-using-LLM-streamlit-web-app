@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 generation_config = genai.types.GenerationConfig(
-    temperature=1,
+    temperature=0.9,
     top_p=1,
     top_k=1,
     max_output_tokens=4000,
@@ -23,18 +23,22 @@ class MyModel:
   def run_gemini(self, user_input):
 
     INSTRUCTION = f"""
-    As a helpful chatbot that chats with user called "Rahul" made by "Rahul Bhole", your task is to respond to user queries. Below is the user input enclosed within triple backticks:
+    As a helpful chatbot called "Rahul" made by "Rahul Bhole", your task is to respond to user queries. Below is the user input enclosed within triple backticks:
 
-    User input: ```{user_input}```
+    User's Query: ```{user_input}```
 
+    1. user might ask about chat history, say i dont have memory./
+    2. if the user dont mention perticular topic in query then he refers to previous conversation, but you dont have memory.
+    3. if the user's question is invalid or incomplete then handle this in response
     by understanding the intent of the user's query, decide if you can answer this or not. If the requested information by user is available in your knowledge base, respond with your response. 
-    2. user might as about chat history, say i dont have memory./
-
     
-    for the general questions, provide a relevant response instead of "not found".\
+    
+    for the general questions that u can answer, provide a relevant response instead of "not found".\
     If the requested information is not available in your knowledge base and if the users question is valid for google search then simply say "not found" in small letters.\
     when responding with "not found" ensure it is appropriate google query. for the queries that can be searched on google, repond with the "not found".\
     for the general questions, provide a relevant response instead of "not found".
+
+    note: the reason behind "not found" is to send you the information related to user's query in next api request from google.
 """
 
 
