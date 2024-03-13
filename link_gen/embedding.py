@@ -1,7 +1,7 @@
 from sentence_transformers import SentenceTransformer
 
 from langchain_community.vectorstores import FAISS
-# from langchain_google_genai import ChatGoogleGenerativeAI,GoogleGenerativeAIEmbeddings
+from langchain_google_genai import ChatGoogleGenerativeAI,GoogleGenerativeAIEmbeddings
 
 
 
