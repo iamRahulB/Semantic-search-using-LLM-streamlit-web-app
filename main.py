@@ -41,7 +41,9 @@ def main():
 
     data = json.loads(response_json)
 
-    answer = data["answer"]
+    answer = response
+
+    # print(st.session_state.messages)
 
     if "not found" in answer or "Not found" in answer:
     
@@ -68,17 +70,19 @@ def main():
 
           obj_embedding = Embedding()
           st.write("Getting Embeddings...")
-          embeddings,model = obj_embedding.get_embedding(splitted_text)
 
-          obj_faiss_search=FaissSearch()
-          distances,indexes=obj_faiss_search.index_search(user_input,embeddings,model)
-          semantic_search=[]
-          for index in indexes[0]:
-              semantic_search.append(splitted_text[index])
+          searched_result = obj_embedding.get_embedding(splitted_text,user_input)
+
+          # obj_faiss_search=FaissSearch()
+          # distances,indexes=obj_faiss_search.index_search(user_input,embeddings,model)
+
+          # semantic_search=[]
+          # for index in indexes[0]:
+          #     semantic_search.append(splitted_text[index])
           st.write("Getting results...")
           obj_final_gemini=FinalGemini()
 
-          response=obj_final_gemini.pass_to_gemini(user_input,semantic_search)
+          response=obj_final_gemini.pass_to_gemini(user_input,searched_result)
 
           status.update(label="Done", state="complete", expanded=False)
       response_json = json.dumps(response)
