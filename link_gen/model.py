@@ -9,7 +9,6 @@ from datetime import datetime
 
 import pandas as pd
 
-<<<<<<< HEAD
 from langchain_community.vectorstores import FAISS
 
 import streamlit as st
@@ -50,14 +49,6 @@ template = """
 #     please take "last mesage history of user and AI" this in mind for the chat history related questions...
 
 #     please take "semantic search from history" in mind for the contextual understanding 
-=======
-generation_config = genai.types.GenerationConfig(
-    temperature=1,
-    top_p=1,
-    top_k=1,
-    max_output_tokens=4000,
-)
->>>>>>> parent of d40e141 (updated instructions)
 
 
 # """
