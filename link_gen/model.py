@@ -9,6 +9,7 @@ from datetime import datetime
 
 import pandas as pd
 
+<<<<<<< HEAD
 from langchain_community.vectorstores import FAISS
 
 import streamlit as st
@@ -49,6 +50,14 @@ template = """
 #     please take "last mesage history of user and AI" this in mind for the chat history related questions...
 
 #     please take "semantic search from history" in mind for the contextual understanding 
+=======
+generation_config = genai.types.GenerationConfig(
+    temperature=1,
+    top_p=1,
+    top_k=1,
+    max_output_tokens=4000,
+)
+>>>>>>> parent of d40e141 (updated instructions)
 
 
 # """
@@ -114,6 +123,9 @@ class MyModel:
     If the requested information is not available in your knowledge base and if the users question is valid for google search then simply say "not found" in small letters.\
     when responding with "not found" ensure it is appropriate google query. for the queries that can be searched on google, repond with the "not found".\
     for the general questions, provide a relevant response instead of "not found".
+<<<<<<< HEAD
+>>>>>>> parent of d40e141 (updated instructions)
+=======
 >>>>>>> parent of d40e141 (updated instructions)
 """
 
