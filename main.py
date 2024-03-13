@@ -68,7 +68,7 @@ def main():
 
           obj_embedding = Embedding()
           st.write("Getting Embeddings...")
-          embeddings,model = obj_embedding.get_embedding(splitted_text,user_input)
+          embeddings,model = obj_embedding.get_embedding(splitted_text)
 
           obj_faiss_search=FaissSearch()
           distances,indexes=obj_faiss_search.index_search(user_input,embeddings,model)
