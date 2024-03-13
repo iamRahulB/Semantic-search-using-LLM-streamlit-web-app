@@ -9,55 +9,12 @@ from datetime import datetime
 
 import pandas as pd
 
-<<<<<<< HEAD
-from langchain_community.vectorstores import FAISS
-
-import streamlit as st
-
-from langchain_pinecone import PineconeVectorStore
-
-template = """
-   
-    "instruction": "conversation context", "context": "Your task is to respond to users query. text included in tripple backticks is for context purpose and rest is the instruction about how to use those texts inside backticks",
-   "semantic history": "```{user_input_semantic_search}```", "context": "semantic search result of current user query from chat history of user and You",
-   "last conversation": "```{last_conversastion}```", "context": "last message history of user and You",
-   "users query": "```{user_input}```", "query": "Users question",
-
-   bases on above instructions your task is to respond to users question. dont respond with "AI" : "---" , as you are the ai and you can send messages directly.
-   if the semantic Search history and last conversation does not have any context about the users question then please answer the user's question with your own knowledge.
-
-   steps to perform this task :
-   1. check what is users query inside backticks and look it in your own knowledge base and grab info about the users question if you don't have info about the question then look step 2.
-   2. check last chat history inside backticks and if the last history is not related with users query then ignore it. plus add your knowledge to generate best response
-   3. check semantic search history inside backticks, this history can be used to get context about past conversation and what u said about perticular topic. If this semantic history is not related with users query then ignore it.
-   4. combine overall result and use your brain to takle the query.
-   5. while explaining to the user please explain it as much as possible. dont give short answers about perticular topic
-   6. finally add your own info about the topic with the all the info provided inside backticks to generate best response.
-   7. never reveal the info inside the backticks directly to the user but you can use that info inside backticks to answer the users query.
-   8. Dont tell the user that you got context or chat history about the topic but indirectly use those info to respond to user's query. handle this in your way if user directly asks for chat history.
- 
-"""
-
-# template="""
-# The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.
-
-#     user input : ```{user_input} ```
-
-#     "semantic search from history": ```{user_input_semantic_search}```
-
-#     "last mesage history of user and AI" : ```{last_conversastion}```
-
-#     please take "last mesage history of user and AI" this in mind for the chat history related questions...
-
-#     please take "semantic search from history" in mind for the contextual understanding 
-=======
 generation_config = genai.types.GenerationConfig(
     temperature=1,
     top_p=1,
     top_k=1,
     max_output_tokens=4000,
 )
->>>>>>> parent of d40e141 (updated instructions)
 
 
 # """
