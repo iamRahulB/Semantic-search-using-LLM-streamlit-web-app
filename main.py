@@ -9,7 +9,7 @@ from link_gen.embedding import Embedding
 from link_gen.faiss_search import FaissSearch
 from link_gen.final_gemini import FinalGemini
 
-def main():
+def main():  
 
   # Session assignment
   if "run_once" not in st.session_state:

@@ -13,3 +13,7 @@ class FaissSearch:
 
         distances,indexes=index.search(np.array([query_distance]),k=2)
         return distances,indexes
+
+
+
+        #  hiii
