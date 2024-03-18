@@ -17,4 +17,3 @@ class LinkGen:
       query_links.append(links)
 
     return query_links
-
