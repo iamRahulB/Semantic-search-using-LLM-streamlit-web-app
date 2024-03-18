@@ -2,6 +2,8 @@ import os
 
 import google.generativeai as genai
 
+from link_gen.pinecone_index import PineConeIndex
+
 generation_config = genai.types.GenerationConfig(
     temperature=1,
     top_p=1,
@@ -33,8 +35,11 @@ Remember User does not know that summary is sent to you So pretend as you know a
         model_gem = genai.GenerativeModel(model_name="gemini-1.0-pro",
                                       generation_config=generation_config)
 
-        response = model_gem.generate_content(INSTRUCTION)
+        response = model_gem.generate_content(INSTRUCTION).text
 
-        final = {"answer": response.text}
+        obj_pinecone=PineConeIndex()
+        obj_pinecone.add_to_pinecone(user_input,response)
+
+        final = {"answer": response}
 
         return final
