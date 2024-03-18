@@ -32,7 +32,7 @@ Semantic Search Web App Usng Gemini Pro application that leverages Gemini Pro, a
    ```
    streamlit run main.py
 ## Demo
-You can access a live demo of the project [here](https://semantic-search-using-llm.streamlit.app).
+You can access a live demo of the project [here]().
 
 
 ## Contributors
