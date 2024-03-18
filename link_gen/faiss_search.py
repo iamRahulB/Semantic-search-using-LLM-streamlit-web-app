@@ -1,5 +1,5 @@
 
-import faiss
+# import faiss
 import numpy as np
 
 class FaissSearch:
