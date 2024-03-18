@@ -8,6 +8,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from link_gen.embedding import Embedding
 from link_gen.faiss_search import FaissSearch
 from link_gen.final_gemini import FinalGemini
+import datetime
 
 def main():
 
@@ -27,6 +28,14 @@ def main():
     with st.chat_message(message["role"]):
       st.markdown(message["content"])
 
+  
+
+# Get the current time in IST
+  
+
+# Print the formatted time
+
+
   if user_input := st.chat_input("What is up?"):
 
     # Display user message in chat message container
@@ -45,7 +54,7 @@ def main():
 
     # print(st.session_state.messages)
 
-    if "not found" in answer or "Not found" in answer:
+    if "Not Available" in answer or "not Available" in answer:
     
 
       new_query=my_model.query_maker(user_input) 
@@ -63,7 +72,7 @@ def main():
           st.write("Getting webpages...")
 
           all_links_body_text = obj_web_content.fetch_content(links)
-          splitter = RecursiveCharacterTextSplitter(chunk_size=1000,
+          splitter = RecursiveCharacterTextSplitter(chunk_size=300,
                                                     chunk_overlap=200)
 
           splitted_text = splitter.split_text(str(all_links_body_text))
@@ -73,18 +82,13 @@ def main():
 
           searched_result = obj_embedding.get_embedding(splitted_text,user_input)
 
-          # obj_faiss_search=FaissSearch()
-          # distances,indexes=obj_faiss_search.index_search(user_input,embeddings,model)
-
-          # semantic_search=[]
-          # for index in indexes[0]:
-          #     semantic_search.append(splitted_text[index])
           st.write("Getting results...")
           obj_final_gemini=FinalGemini()
 
           response=obj_final_gemini.pass_to_gemini(user_input,searched_result)
-
           status.update(label="Done", state="complete", expanded=False)
+
+
       response_json = json.dumps(response)
 
       data = json.loads(response_json)
@@ -109,4 +113,3 @@ def main():
 
 if __name__ == "__main__":
     main()    
-
