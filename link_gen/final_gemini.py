@@ -30,6 +30,7 @@ Remember to use IPython Markdown formatting and include any relevant Python code
 Remember User does not know that summary is sent to you So pretend as you know all already.**
 """
 
+
         genai.configure(api_key=os.environ['GEMINI_API'])
 
         model_gem = genai.GenerativeModel(model_name="gemini-1.0-pro",
