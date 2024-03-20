@@ -10,17 +10,18 @@ class PineConeIndex:
         self.now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5, minutes=30)))
         self.formatted_time=self.now.strftime("%Y-%m-%d %H:%M:%S")
 
-        self.embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
-        self.index_name = "chathistory"
+        
 
 
 
     def add_to_pinecone(self,user_input,response):
-        
-        vectorstore = PineconeVectorStore(index_name=self.index_name, embedding=self.embeddings)
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
-        response_formatted=f"'time : {self.formatted_time}', 'user question : {user_input}\n ', 'AI response : {response}'"
+        index_name = "chathistory"
+        vectorstore = PineconeVectorStore(index_name=index_name, embedding=embeddings)
+
+        response_formatted=[f"{self.formatted_time}  {user_input} - {response}"]
 
         vectorstore.add_texts(response_formatted)
 
@@ -29,22 +30,26 @@ class PineConeIndex:
 
     
     def get_from_pinecone(self,user_input):
+        embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
-        docsearch_query = PineconeVectorStore.from_existing_index( index_name=self.index_name,embedding=self.embeddings,)
+        index_name = "chathistory"
 
-        docs = docsearch_query.max_marginal_relevance_search(user_input,k=1,fetch_k=3)
+        docsearch_query = PineconeVectorStore.from_existing_index( index_name=index_name,embedding=embeddings,)
+
+        docs = docsearch_query.max_marginal_relevance_search(user_input,k=2,fetch_k=20,)
 
         print("semantic docs------------------",docs)
 
         user_input_semantic_search=[]
+        
+
 
         try :
-        
-            for i, doc in enumerate(docs):
-                user_input_semantic_search.append(f"{self.formatted_time} :{doc.page_content}")
-                print(f"{i + 1}.", doc.page_content, "\n")
 
-            print("best of best------------------",user_input_semantic_search)
+            for i in docs:
+                user_input_semantic_search.append(f"{self.formatted_time} :{i.page_content}")
+
+            
 
         except:
             pass
@@ -60,4 +65,6 @@ class PineConeIndex:
         
         print("got from pinecone")
 
+
+        print("best of best------------------donnnn",user_input_semantic_search)
         return user_input_semantic_search
