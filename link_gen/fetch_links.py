@@ -1,15 +1,19 @@
+from googlesearch import search
 
-# import faiss
-import numpy as np
 
-class FaissSearch:
-    def __init__(self) -> None:
-        pass
+class LinkGen:
 
-    def index_search(self,user_input,embeddings,model):
-        index=faiss.IndexFlatL2(embeddings.shape[1])
-        index.add(embeddings)
-        query_distance=model.encode([user_input])[0]
+  def __init__(self, user_input):
+    self.user_input = user_input
 
-        distances,indexes=index.search(np.array([query_distance]),k=2)
-        return distances,indexes
+  def generate_links(self):
+    query_links = []
+    for links in search(query=self.user_input,
+                        tld="com",
+                        lang="en",
+                        num=3,
+                        stop=3,
+                        pause=2):
+      query_links.append(links)
+
+    return query_links
