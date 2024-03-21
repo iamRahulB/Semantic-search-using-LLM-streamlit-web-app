@@ -10,6 +10,7 @@ from link_gen.faiss_search import FaissSearch
 from link_gen.final_gemini import FinalGemini
 import datetime
 from link_gen.generate_user_id import UserId
+import time
 
 def main():
 
@@ -44,11 +45,11 @@ def main():
 
     data = json.loads(response_json)
 
-    answer = response
+    knowledge_answer = response
 
     # print(st.session_state.messages)
 
-    if "Perform Google Search" in response or "perform google search" in response or "Perform google search" in response or "Perform Google search" in response or "perform Google Search" in response:
+    if "Perform Google Search" in response or "perform google search" in response or "Perform google search" in response or "Perform Google search" in response:
     
       new_query=my_model.query_maker(user_input) 
       new_query =new_query["answer"] 
@@ -86,23 +87,36 @@ def main():
 
       data = json.loads(response_json)
 
-      answer = data["answer"]
+      web_answer = data["answer"]
 
+      
+      final_answer_web=web_answer+str(f"\n\n\nSource : Web \n\n {links[0]}\n\n{links[1]}\n\n{links[2]}")
       with st.chat_message("assistant"):
-        st.markdown(answer+str(f"\n\n\nSource : Web \n\n {links[0]}\n\n{links[1]}\n\n{links[2]}"))
+        
+        def stream():
+           for char in final_answer_web.split(" "):
+              yield char + " "
+              time.sleep(0.02)
+        st.write_stream(stream)
 
       st.session_state.messages.append({
           "role": "assistant",
-          "content": answer+str(f"\n\n\nSource : Web \n\n {links[0]}\n\n{links[1]}\n\n{links[2]}")
+          "content": web_answer+str(f"\n\n\nSource : Web \n\n {links[0]}\n\n{links[1]}\n\n{links[2]}")
       })
       
 
     else:
+      final_answer_knowledge=knowledge_answer+str("\n\nSurce : Gemini")
       with st.chat_message("assistant"):
-        st.markdown(answer+str("\n\nSurce : Gemini"))
+        def stream():
+           for char in final_answer_knowledge.split(" "):
+              yield char + " "
+              time.sleep(0.02)
+        st.write_stream(stream)
 
-      st.session_state.messages.append({"role": "assistant", "content": answer+str("\n\nSurce : Gemini")})
+      st.session_state.messages.append({"role": "assistant", "content": knowledge_answer+str("\n\nSurce : Gemini")})
 
 
 if __name__ == "__main__":
     main()    
+
