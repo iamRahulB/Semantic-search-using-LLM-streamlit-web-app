@@ -2,6 +2,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_pinecone import PineconeVectorStore
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import datetime
+from link_gen.remove_stopwords import StopWordsRemoval
 
 
 class PineConeIndex:
@@ -16,12 +17,17 @@ class PineConeIndex:
 
 
     def add_to_pinecone(self,user_input,response):
+        obj_remove_stopwords=StopWordsRemoval()
+
+        filtered_response=obj_remove_stopwords.stopwords_removal(response)
+
+
         embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
         index_name = "chathistory"
         vectorstore = PineconeVectorStore(index_name=index_name, embedding=embeddings)
 
-        response_formatted=[f"{self.formatted_time}  {user_input} - {response}"]
+        response_formatted=[f"{filtered_response}"]
 
         vectorstore.add_texts(response_formatted)
 
@@ -36,7 +42,7 @@ class PineConeIndex:
 
         docsearch_query = PineconeVectorStore.from_existing_index( index_name=index_name,embedding=embeddings,)
 
-        docs = docsearch_query.max_marginal_relevance_search(user_input,k=2,fetch_k=20,)
+        docs = docsearch_query.max_marginal_relevance_search(user_input,k=1,fetch_k=20,)
 
         print("semantic docs------------------",docs)
 
