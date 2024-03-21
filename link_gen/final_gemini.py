@@ -3,12 +3,17 @@ import os
 import google.generativeai as genai
 
 from link_gen.pinecone_index import PineConeIndex
+from link_gen.elastic_search import Elastic
+
+
+
+
 
 generation_config = genai.types.GenerationConfig(
     temperature=1,
     top_p=1,
     top_k=1,
-    max_output_tokens=4000,
+    max_output_tokens=4096,
 )
 
 class FinalGemini:
@@ -34,12 +39,17 @@ Remember User does not know that summary is sent to you So pretend as you know a
         genai.configure(api_key=os.environ['GEMINI_API'])
 
         model_gem = genai.GenerativeModel(model_name="gemini-1.0-pro",
-                                      generation_config=generation_config)
+                                      generation_config=generation_config, )
 
         response = model_gem.generate_content(INSTRUCTION).text
 
-        obj_pinecone=PineConeIndex()
-        obj_pinecone.add_to_pinecone(user_input,response)
+
+
+        # obj_pinecone=PineConeIndex()
+        # obj_pinecone.add_to_pinecone(user_input,response)
+
+        obj_elastic_search=Elastic()
+        obj_elastic_search.add_to_elasticsearch(user_input,response)
 
         final = {"answer": response}
 
