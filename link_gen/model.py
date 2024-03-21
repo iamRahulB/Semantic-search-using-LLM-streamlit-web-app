@@ -11,6 +11,11 @@ from langchain_pinecone import PineconeVectorStore
 import datetime
 from link_gen.pinecone_index import PineConeIndex
 from link_gen.templates import Templates
+from link_gen.elastic_search import Elastic
+from link_gen.recent_chat_history import RecentChat
+
+
+
 
 
 history=[]
@@ -23,67 +28,47 @@ class MyModel:
   
 
   def run_gemini(self, user_input):
-    conversation_data=[]
-    for messages in st.session_state.messages:
-      conversation_data.append(messages)
 
-    user_content_list = []
-    assistant_content_list = []
-
-    for entry in conversation_data:
-        if entry['role'] == 'user':
-            user_content_list.append(entry['content'])
-        elif entry['role'] == 'assistant':
-            assistant_content_list.append(entry['content'])
-
-    # Combine user and assistant content into a single list
-    combined_content_list = [
-        f"user_content: {user_content}, assistant_content: {assistant_content}"
-        for user_content, assistant_content in zip(user_content_list, assistant_content_list) 
-        ]
-
-    
-    now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5, minutes=30)))
-    formatted_time=now.strftime("%Y-%m-%d %H:%M:%S")
-
-
-    final_chat=[]
-    for content in combined_content_list:
-        final_chat.append(f"{formatted_time} :{content}")
+    obj_recent_chat_history=RecentChat()
+    final_chat=obj_recent_chat_history.recent_chat_history()
 
     last_conversastion=final_chat[-2:]
     last_conversastion=list(reversed(last_conversastion))
 
-    print("last message to ai -----------", last_conversastion)
 
     # mes=mes.reverse()
     # mes_last=mes[0:4]
     # new_mes=mes[:3]
     # print("laste 1 message---------------------------------------------------------------",new_mes)
+    
+    obj_elastic_search=Elastic()
+    user_input_semantic_search=obj_elastic_search.get_from_elasticsearch(user_input)
 
-    obj_pinecone=PineConeIndex()  
-    user_input_semantic_search=obj_pinecone.get_from_pinecone(user_input)
+
+    # obj_pinecone=PineConeIndex()  
+    # user_input_semantic_search=obj_pinecone.get_from_pinecone(user_input)
 
     
-    llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=0.9,max_output_tokens=4096)  
+    llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=1,max_output_tokens=4096,)  
  
     prompt=PromptTemplate(
     input_variables=["user_input","user_input_semantic_search","last_conversastion"],
     template=Templates.template )
 
-    chain=LLMChain(llm=llm,prompt=prompt)
+    chain=LLMChain(llm=llm,prompt=prompt
+                   )
 
    
     
     response=chain.predict(user_input=user_input,user_input_semantic_search=user_input_semantic_search,last_conversastion=last_conversastion)
 
-    if "Not Available" in response:
+    if "Perform Google Search" in response or "perform google search" in response or "Perform google search" in response:
       pass
     
     else:
-      obj_pinecone.add_to_pinecone(user_input,response)
-
-    
+      # obj_pinecone.add_to_pinecone(user_input,response)
+       
+       obj_elastic_search.add_to_elasticsearch(user_input,response)
 
     return response
   
@@ -111,4 +96,3 @@ class MyModel:
     return final
 
   
-
