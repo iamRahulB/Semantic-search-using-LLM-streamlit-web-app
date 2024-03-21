@@ -1,98 +1,83 @@
-from langchain_google_genai import ChatGoogleGenerativeAI
 import os
-import langchain
-from langchain.prompts import PromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI,GoogleGenerativeAIEmbeddings
-from langchain.chains import LLMChain
-import pandas as pd
-from langchain_community.vectorstores import FAISS
-import streamlit as st
-from langchain_pinecone import PineconeVectorStore
-import datetime
-from link_gen.pinecone_index import PineConeIndex
-from link_gen.templates import Templates
-from link_gen.elastic_search import Elastic
-from link_gen.recent_chat_history import RecentChat
+
+import google.generativeai as genai
+
+from datetime import datetime
+
+
+generation_config = genai.types.GenerationConfig(
+    temperature=0.9,
+    top_p=1,
+    top_k=1,
+    max_output_tokens=4000,
+)
 
 
 
-
-
-history=[]
 
 class MyModel:
 
   def __init__(self):
     pass
 
-  
-
   def run_gemini(self, user_input):
 
-    obj_recent_chat_history=RecentChat()
-    final_chat=obj_recent_chat_history.recent_chat_history()
+    INSTRUCTION = f"""
+    As a helpful chatbot called "Rahul" made by "Rahul Bhole", your task is to respond to user queries. Below is the user input enclosed within triple backticks:
 
-    last_conversastion=final_chat[-2:]
-    last_conversastion=list(reversed(last_conversastion))
+    User's Query: ```{user_input}```
 
-
-    # mes=mes.reverse()
-    # mes_last=mes[0:4]
-    # new_mes=mes[:3]
-    # print("laste 1 message---------------------------------------------------------------",new_mes)
+    1. user might ask about chat history, say i dont have memory./
+    2. if the user dont mention perticular topic in query then he refers to previous conversation, but you dont have memory.
+    3. if the user's question is invalid or incomplete then handle this in response
+    by understanding the intent of the user's query, decide if you can answer this or not. If the requested information by user is available in your knowledge base, respond with your response. 
     
-    obj_elastic_search=Elastic()
-    user_input_semantic_search=obj_elastic_search.get_from_elasticsearch(user_input)
-
-
-    # obj_pinecone=PineConeIndex()  
-    # user_input_semantic_search=obj_pinecone.get_from_pinecone(user_input)
-
     
-    llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=1,max_output_tokens=4096,)  
- 
-    prompt=PromptTemplate(
-    input_variables=["user_input","user_input_semantic_search","last_conversastion"],
-    template=Templates.template )
+    for the general questions that u can answer, provide a relevant response instead of "not found".\
+    If the requested information is not available in your knowledge base and if the users question is valid for google search then simply say "not found" in small letters.\
+    when responding with "not found" ensure it is appropriate google query. for the queries that can be searched on google, repond with the "not found".\
+    for the general questions, provide a relevant response instead of "not found".
 
-    chain=LLMChain(llm=llm,prompt=prompt
-                   )
+    note: the reason behind "not found" is to send you the information related to user's query in next api request from google.
+"""
 
-   
+
+    genai.configure(api_key=os.environ['GEMINI_API'])
+
+    model_gem = genai.GenerativeModel(model_name="gemini-1.0-pro",
+                                      generation_config=generation_config)
+
+    response = model_gem.generate_content(INSTRUCTION)
+
+    final = {"answer": response.text}
     
-    response=chain.predict(user_input=user_input,user_input_semantic_search=user_input_semantic_search,last_conversastion=last_conversastion)
-
-    if "Perform Google Search" in response or "perform google search" in response or "Perform google search" in response:
-      pass
-    
-    else:
-      # obj_pinecone.add_to_pinecone(user_input,response)
-       
-       obj_elastic_search.add_to_elasticsearch(user_input,response)
-
-    return response
+    return final
   
-
-
   def query_maker(self,user_input):
-
-    current_time = datetime.datetime.now()
+    current_time = datetime.now()
 
     full_date = current_time.strftime("%Y-%m-%d")
 
-    
-    llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=0.9,max_output_tokens=4096)  
-  
-    prompt=PromptTemplate(
-    input_variables=["user_input","full_date",],
-    template=Templates.template2  )
+    INSTRUCTION = f"""
+        As a helpful assistant called "Rahul" created by "Rahul Bhole", your task is to respond to user queries. Below is the user input enclosed within triple backticks:
 
-    chain=LLMChain(llm=llm,prompt=prompt)
-    
-    response=chain.predict(user_input=user_input,full_date=full_date)
+        User input: ```{user_input}```
 
-    final = {"answer": response}
-    
+        today's date : {full_date}
+
+        Your objective is to generate a concise and grammatically correct query based on the user's question. This query will be used to search for the latest details on Google. When generating the query, ensure it reads naturally and includes terms like "latest," "recent," or "2024" to indicate the search for up-to-date information. Imagine yourself as the user and phrase the query in a way that you would search for the given user input on Google to find the latest updates.
+
+        Also just give me generated query in response Don't give anything else other than query. 
+    """
+
+
+
+    genai.configure(api_key=os.environ['GEMINI_API'])
+
+    model_gem = genai.GenerativeModel(model_name="gemini-1.0-pro",
+                                      generation_config=generation_config)
+
+    response = model_gem.generate_content(INSTRUCTION)
+
+    final = {"answer": response.text}
     return final
-
-  
