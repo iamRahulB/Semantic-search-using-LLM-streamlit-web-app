@@ -9,6 +9,7 @@ from link_gen.embedding import Embedding
 from link_gen.faiss_search import FaissSearch
 from link_gen.final_gemini import FinalGemini
 import datetime
+from link_gen.generate_user_id import UserId
 
 def main():
 
@@ -16,25 +17,18 @@ def main():
   if "run_once" not in st.session_state:
       st.session_state.run_once = True
       
-      # Initialize session variables
-      st.session_state.messages = []
+  # Initialize session variable
+  obj_user_id=UserId()   
 
   st.title("Rahul's Semantic Search LLM ")
 
-  if "messages" not in st.session_state:
+  if "messages" not in st.session_state and "user_id" not in st.session_state:
     st.session_state.messages = []
+    st.session_state["user_id"]=obj_user_id.generate_user_id()
 
   for message in st.session_state.messages:
     with st.chat_message(message["role"]):
       st.markdown(message["content"])
-
-  
-
-# Get the current time in IST
-  
-
-# Print the formatted time
-
 
   if user_input := st.chat_input("What is up?"):
 
@@ -54,9 +48,8 @@ def main():
 
     # print(st.session_state.messages)
 
-    if "Not Available" in answer or "not Available" in answer:
+    if "Perform Google Search" in response or "perform google search" in response or "Perform google search" in response or "Perform Google search" in response:
     
-
       new_query=my_model.query_maker(user_input) 
       new_query =new_query["answer"] 
       with st.chat_message("assistant"):
@@ -113,4 +106,3 @@ def main():
 
 if __name__ == "__main__":
     main()    
-
