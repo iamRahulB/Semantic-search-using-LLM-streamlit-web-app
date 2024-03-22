@@ -49,7 +49,7 @@ class MyModel:
     # user_input_semantic_search=obj_pinecone.get_from_pinecone(user_input)
 
     
-    llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=1,max_output_tokens=4096,)  
+    llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=1,max_output_tokens=40960,)  
  
     prompt=PromptTemplate(
     input_variables=["user_input","user_input_semantic_search","last_conversastion"],
@@ -81,7 +81,7 @@ class MyModel:
     full_date = current_time.strftime("%Y-%m-%d")
 
     
-    llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=0.9,max_output_tokens=4096)  
+    llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=0.9,max_output_tokens=40960)  
   
     prompt=PromptTemplate(
     input_variables=["user_input","full_date",],
