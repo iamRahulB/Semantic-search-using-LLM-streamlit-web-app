@@ -2,7 +2,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 import os
 import langchain
 from langchain.prompts import PromptTemplate
-from langchain_google_genai import ChatGoogleGenerativeAI,GoogleGenerativeAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAI, HarmBlockThreshold, HarmCategory
 from langchain.chains import LLMChain
 import pandas as pd
 from langchain_community.vectorstores import FAISS
@@ -13,7 +13,6 @@ from link_gen.pinecone_index import PineConeIndex
 from link_gen.templates import Templates
 from link_gen.elastic_search import Elastic
 from link_gen.recent_chat_history import RecentChat
-
 
 
 
@@ -30,10 +29,10 @@ class MyModel:
   def run_gemini(self, user_input):
 
     obj_recent_chat_history=RecentChat()
-    final_chat=obj_recent_chat_history.recent_chat_history()
+    num_messages_to_get=2    #2 means 3 
+    last_conversastion=obj_recent_chat_history.recent_chat_history(num_messages_to_get)
 
-    last_conversastion=final_chat[-2:]
-    last_conversastion=list(reversed(last_conversastion))
+    
 
 
     # mes=mes.reverse()
@@ -78,18 +77,24 @@ class MyModel:
 
     current_time = datetime.datetime.now()
 
+    obj_recent_chat=RecentChat
+    
+    last_conversation=obj_recent_chat.recent_chat_history(self,num_messages_to_get=1)
+
+    print("query maker last chat \n\n ",last_conversation, '\n\n')
+
     full_date = current_time.strftime("%Y-%m-%d")
 
     
     llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=0.9,max_output_tokens=40960)  
   
     prompt=PromptTemplate(
-    input_variables=["user_input","full_date",],
+    input_variables=["user_input","full_date","last_conversation"],
     template=Templates.template2  )
 
     chain=LLMChain(llm=llm,prompt=prompt)
     
-    response=chain.predict(user_input=user_input,full_date=full_date)
+    response=chain.predict(user_input=user_input,full_date=full_date,last_conversation=last_conversation)
 
     final = {"answer": response}
     
