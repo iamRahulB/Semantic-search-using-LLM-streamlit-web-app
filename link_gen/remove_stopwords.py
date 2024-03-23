@@ -16,7 +16,7 @@ class StopWordsRemoval:
         words=word_tokenize(response)
         stop_words=set(stopwords.words('english'))
 
-        filtered_words=[re.sub(r'[^a-zA-Z0-9\s]','',word) for word in words if word.lower() not in stop_words]
+        filtered_words=[word for word in words if word.lower() not in stop_words]    # re.sub(r'[^a-zA-Z0-9\s.]','', word)
 
 
         filtered_text=' '.join(filtered_words)
