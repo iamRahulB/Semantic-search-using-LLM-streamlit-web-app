@@ -3,38 +3,58 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 import os
 from link_gen.remove_stopwords import StopWordsRemoval
 import streamlit as st
+from langchain.text_splitter import RecursiveCharacterTextSplitter
  
+
 
 class Elastic:
 
     def __init__(self) -> None:
-        self.embeddings=GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-
+        pass
     def add_to_elasticsearch(self,user_input,response):
+        embeddings=GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+
+        obj_remove_stopwords=StopWordsRemoval()
+
+        cleaned_text=obj_remove_stopwords.stopwords_removal(response)
+
+        
+
+        splitter = RecursiveCharacterTextSplitter(chunk_size=100,
+                                                    chunk_overlap=20,
+                                                    separators=["."])
+
+        splitted_text = splitter.split_text(str(cleaned_text))
+
+
+        print("this is response splitted text ",splitted_text)
+        
 
         user_id=st.session_state.user_id.lower()
 
-       
-        obj_remove_stopwords=StopWordsRemoval()    # removal of stopwords before sening to elastic searvh db
-
-        filtered_response=obj_remove_stopwords.stopwords_removal(response)
+    
+            
         
         index_name=user_id
 
         db=ElasticsearchStore(
             es_cloud_id=os.environ.get("ES_CLOUD_ID"),
             es_api_key=os.environ.get("ES_API_KEY"),
-            embedding=self.embeddings,
+            embedding=embeddings,
             index_name=index_name )
+        
+        splitted_text.insert(0, f"User Question: {user_input}")
 
-        db.add_texts(texts=[filtered_response])
+        db.add_texts(texts=splitted_text)
 
-        print("added to elastic search database::::::::::::::::::::::::::::\n",filtered_response,"\n")
+        print("added to elastic search database::::::::::::::::::::::::::::\n",splitted_text,"\n")
 
         print("current user session ID ::::::::::::::::::::::::: ",user_id,"\n")
 
 
     def get_from_elasticsearch(self,user_input):
+
+        embeddings=GoogleGenerativeAIEmbeddings(model="models/embedding-001")
         user_id=st.session_state.user_id.lower()
 
         index_name=user_id
@@ -42,7 +62,7 @@ class Elastic:
         db=ElasticsearchStore(
             es_cloud_id=os.environ.get("ES_CLOUD_ID"),
             es_api_key=os.environ.get("ES_API_KEY"),
-            embedding=self.embeddings,
+            embedding=embeddings,
             index_name=index_name
         )
         # filter semantic result by user id or session ids
@@ -52,10 +72,10 @@ class Elastic:
         scores=[]
 
         try :
-            docs=db.similarity_search_with_score(query=user_input,k=3)
+            docs=db.similarity_search_with_score(query=user_input,k=20)
 
             for i in docs:
-                if i[1]>0.87:
+                if i[1]>0.90:
                     user_input_semantic_search.append(i[0].page_content)
                 scores.append(i[1])
 
