@@ -22,7 +22,7 @@ class Elastic:
 
         splitter = RecursiveCharacterTextSplitter(chunk_size=100,
                                                     chunk_overlap=20,
-                                                    separators=["."])
+                                                    )
 
         splitted_text = splitter.split_text(str(cleaned_text))
 
