@@ -6,7 +6,7 @@ class RecentChat:
     def __init__(self) -> None:
         pass
 
-    def recent_chat_history(self):
+    def recent_chat_history(self, num_messages_to_get):
         conversation_data=[]
 
         for messages in st.session_state.messages:
@@ -36,6 +36,8 @@ class RecentChat:
         for content in combined_content_list:
             final_chat.append(f"{formatted_time} :{content}")
 
-        print("recent chat history ::::::::::::::::::::::: \n :::", final_chat,"\n")
+        last_conversastion=final_chat[-num_messages_to_get:]
+        last_conversastion=list(reversed(last_conversastion))
+        print("last conversasation :::::::::::::::::::::::::::::\n", last_conversastion ,"\n")
 
-        return final_chat
+        return last_conversastion
