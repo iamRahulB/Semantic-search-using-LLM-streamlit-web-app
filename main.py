@@ -50,7 +50,7 @@ def main():
 
     # print(st.session_state.messages)
 
-    if "Perform Google Search" in response or "perform google search" in response or "Perform google search" in response or "Perform Google search" in response:
+    if "Perform Google Search" in response or "perform google search" in response or "Perform google search" in response or "Perform Google search" in response or "perform Google Search" in response :
     
       new_query=my_model.query_maker(user_input) 
       new_query =new_query["answer"] 
