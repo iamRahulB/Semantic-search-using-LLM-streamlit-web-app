@@ -48,7 +48,7 @@ class MyModel:
     # user_input_semantic_search=obj_pinecone.get_from_pinecone(user_input)
 
     
-    llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=0.7,max_output_tokens=40960,)  
+    llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=1,max_output_tokens=40960,)  
  
     prompt=PromptTemplate(
     input_variables=["user_input","user_input_semantic_search","last_conversastion"],
@@ -61,7 +61,7 @@ class MyModel:
     
     response=chain.predict(user_input=user_input,user_input_semantic_search=user_input_semantic_search,last_conversastion=last_conversastion)
 
-    if "Perform Google Search" in response or "perform google search" in response or "Perform google search" in response:
+    if "Not Available" in response or "Not available" in response or "not Available" in response or "not available" in response:
       pass
     
     else:
@@ -86,7 +86,7 @@ class MyModel:
     full_date = current_time.strftime("%Y-%m-%d")
 
     
-    llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=0.9,max_output_tokens=40960)  
+    llm=ChatGoogleGenerativeAI(model="gemini-1.0-pro",temperature=1,max_output_tokens=40960)  
   
     prompt=PromptTemplate(
     input_variables=["user_input","full_date","last_conversation"],
