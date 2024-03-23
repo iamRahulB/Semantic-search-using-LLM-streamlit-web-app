@@ -21,11 +21,12 @@ def main():
   # Initialize session variable
   obj_user_id=UserId()   
 
-  st.title("Rahul's Semantic Search LLM ")
+  st.title("Rahul's Semantic Search Querio AI ")
 
   if "messages" not in st.session_state and "user_id" not in st.session_state:
     st.session_state.messages = []
     st.session_state["user_id"]=obj_user_id.generate_user_id()
+  st.write(f"current Session ID : {st.session_state.user_id}" )
 
   for message in st.session_state.messages:
     with st.chat_message(message["role"]):
@@ -106,7 +107,7 @@ def main():
       
 
     else:
-      final_answer_knowledge=knowledge_answer+str("\n\nSurce : Gemini")
+      final_answer_knowledge=knowledge_answer+str("\n\nSource : Querio AI")
       with st.chat_message("assistant"):
         def stream():
            for char in final_answer_knowledge.split(" "):
@@ -114,7 +115,7 @@ def main():
               time.sleep(0.02)
         st.write_stream(stream)
 
-      st.session_state.messages.append({"role": "assistant", "content": knowledge_answer+str("\n\nSurce : Gemini")})
+      st.session_state.messages.append({"role": "assistant", "content": knowledge_answer+str("\n\nSource : Querio AI")})
 
 
 if __name__ == "__main__":
