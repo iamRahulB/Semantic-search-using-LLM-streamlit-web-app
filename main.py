@@ -50,7 +50,7 @@ def main():
 
     # print(st.session_state.messages)
 
-    if "Perform Google Search" in response or "perform google search" in response or "Perform google search" in response or "Perform Google search" in response or "perform Google Search" in response :
+    if "Not Available" in response or "Not available" in response or "not Available" in response or "not available" in response:
     
       new_query=my_model.query_maker(user_input) 
       new_query =new_query["answer"] 
@@ -68,19 +68,21 @@ def main():
 
           all_links_body_text = obj_web_content.fetch_content(links)
           splitter = RecursiveCharacterTextSplitter(chunk_size=300,
-                                                    chunk_overlap=200)
+                                                    chunk_overlap=60)
 
           splitted_text = splitter.split_text(str(all_links_body_text))
 
           obj_embedding = Embedding()
           st.write("Getting Embeddings...")
 
+          
+
           searched_result = obj_embedding.get_embedding(splitted_text,user_input)
 
           st.write("Getting results...")
           obj_final_gemini=FinalGemini()
 
-          response=obj_final_gemini.pass_to_gemini(user_input,searched_result)
+          response=obj_final_gemini.pass_to_gemini(user_input,searched_result,links)
           status.update(label="Done", state="complete", expanded=False)
 
 
@@ -91,7 +93,7 @@ def main():
       web_answer = data["answer"]
 
       
-      final_answer_web=web_answer+str(f"\n\n\nSource : Web \n\n {links[0]}\n\n{links[1]}\n\n{links[2]}")
+      final_answer_web=web_answer+str(f"\n\n\nSource : Web ")   #\n\n {links[0]}\n\n{links[1]}\n\n{links[2]}
       with st.chat_message("assistant"):
         
         def stream():
@@ -102,7 +104,7 @@ def main():
 
       st.session_state.messages.append({
           "role": "assistant",
-          "content": web_answer+str(f"\n\n\nSource : Web \n\n {links[0]}\n\n{links[1]}\n\n{links[2]}")
+          "content": web_answer+str(f"\n\n\nSource : Web ")  #\n\n {links[0]}\n\n{links[1]}\n\n{links[2]}
       })
       
 
